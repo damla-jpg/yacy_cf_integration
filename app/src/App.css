@@ -1,9 +1,10 @@
 .App {
   /* put everything in the middle of the page */
-  display: flex;
-  flex-direction: column;
   text-align: center;
   justify-content: center;
+  background-color: rgb(54, 54, 54);
+  color: white;
+  height: 100vh;
 }
 
 .textbox{
@@ -19,4 +20,8 @@
 .navigation{
   display: flex;
   justify-content: center;
+  /* fix at the bottom  of the page */
+  position: fixed;
+  bottom: 2%;
+  width: 100%;
 }
