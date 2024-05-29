@@ -4,39 +4,14 @@ import Stack from '@mui/material/Stack';
 import './App.css';
 import * as React from 'react';
 import usePagination from "./Pagination";
-import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Profile from './Profile';
-import Peers from './Peers';
-import PropTypes from 'prop-types';
-import SwipeableViews from 'react-swipeable-views';
-import { useTheme } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
-import Box from '@mui/material/Box';
+import Peers from "./Peers";
 import { alpha, styled } from '@mui/material/styles';
+import SearchBar from './components/SearchBar';
+import FullWidthTabs from './components/TopNavBar';
 
-const SearchBar = styled(TextField)({
-  '& label': {
-    color: '#E0E3E7',
-  },
-  '& label.Mui-focused': {
-    color: 'secondary',
-  },
-  '& .MuiInputBase-input': {
-    color: "white",
-  },
-  '& .MuiOutlinedInput-root': {
-    '& fieldset': {
-      borderColor: '#E0E3E7',
-    },
-    '&:hover fieldset': {
-      borderColor: 'secondary',
-    },
-  },
-});
 
 const NavbarPagination = styled(Pagination)({
   '& .MuiPaginationItem-root': {
@@ -55,8 +30,12 @@ function App() {
   let [query, setQuery] = useState('');
   let [queryResults, setQueryResults] = useState([]);
   let [page, setPage] = useState(1);
-  const theme = useTheme();
   let [value, setValue] = useState(0);
+
+  function getTab(tab_index) {
+    setValue(tab_index);
+  }
+  
   let handleSearchChange = (e) => {
     setQuery(e.target.value);
   };
@@ -73,85 +52,6 @@ function App() {
   }
   const partQuery = usePagination(queryResults, 10);
 
-  TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-  };
-
-  function a11yProps(index) {
-    return {
-      id: `full-width-tab-${index}`,
-      'aria-controls': `full-width-tabpanel-${index}`,
-    };
-  }
-
-
-  function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`full-width-tabpanel-${index}`}
-        aria-labelledby={`full-width-tab-${index}`}
-        {...other}
-      >
-      </div>
-    );
-  }
-
-  let handleChange = (event, newValue) => {
-    console.log('newValue:', newValue);
-    setValue(newValue);
-  };
-
-  let handleChangeIndex = (index) => {
-    setValue(index);
-  };
-
-
-  function FullWidthTabs() {
-
-    return (
-      <Box sx={{ bgcolor: "transparent", width: "100%", marginBottom: "5%" }}>
-        <AppBar position="static" sx={{ bgcolor: "transparent" }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            indicatorColor="secondary"
-            textColor="inherit"
-            variant="fullWidth"
-            aria-label="full width tabs example"
-          >
-            <Tab label="search" {...a11yProps(0)} />
-            <Tab label="profile" {...a11yProps(1)} />
-            <Tab label="peers" {...a11yProps(2)} />
-            <Tab label="messages" {...a11yProps(3)} />
-          </Tabs>
-        </AppBar>
-        <SwipeableViews
-          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-          index={value}
-          onChangeIndex={handleChangeIndex}
-        >
-          <TabPanel value={value} index={0} dir={theme.direction}>
-            Item One
-          </TabPanel>
-          <TabPanel value={value} index={1} dir={theme.direction}>
-            Item Two
-          </TabPanel>
-          <TabPanel value={value} index={2} dir={theme.direction}>
-            Item Three
-          </TabPanel>
-          <TabPanel value={value} index={3} dir={theme.direction}>
-            Item Four
-          </TabPanel>
-        </SwipeableViews>
-      </Box>
-    );
-  }
 
   const Navbar = () => {
     const count = queryResults.length / 10;
@@ -218,7 +118,7 @@ function App() {
   if( value  === 0){
     return (
       <div className="App">
-        <FullWidthTabs />
+        <FullWidthTabs setValueParent={getTab} />
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <h1>Re-Search Project (with YaCy integration)</h1>
@@ -235,30 +135,31 @@ function App() {
           </Grid>
         </Grid>
         {/* <Profile /> */}
-        {/* <Peers /> */}
       </div>
     );
   }
   else if(value === 1){
     return (
       <div className="App">
-        <FullWidthTabs />
+        <FullWidthTabs setValueParent={getTab}/>
         <Profile />
       </div>
     );
   }
   else if(value === 2){
+    
     return (
       <div className="App">
-        <FullWidthTabs />
-        <Peers />
+        <FullWidthTabs setValueParent={getTab} />
+        {/* <Peers sendPeers={handlePeers}/> */}
+        
       </div>
     );
   }
   else if(value === 3){
     return (
       <div className="App">
-        <FullWidthTabs />
+        <FullWidthTabs setValueParent={getTab} />
         <h1>Messages</h1>
       </div>
     );
