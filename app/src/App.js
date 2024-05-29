@@ -112,7 +112,7 @@ function App() {
   }
 
   useEffect(() => {
-    // getSearchResults();
+    getSearchResults();
   }, []);
 
   if( value  === 0){
@@ -149,9 +149,9 @@ function App() {
   else if(value === 2){
     
     return (
-      <div className="App">
+      <div className="Peers">
         <FullWidthTabs setValueParent={getTab} />
-        {/* <Peers sendPeers={handlePeers}/> */}
+        <Peers />
         
       </div>
     );

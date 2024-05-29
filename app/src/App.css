@@ -4,17 +4,24 @@
   justify-content: center;
   background-color: rgb(54, 54, 54);
   color: white;
+  /* i want minimum height to be fit content but if the content 
+  isn't full height i want it to be 100vh */
+  min-height: fit-content;
   height: 100vh;
+
+}
+
+.Peers{
+  min-height: fit-content;
+  text-align: center;
+  justify-content: center;
+  background-color: rgb(54, 54, 54);
+  color: white;
 }
 
 .textbox{
   width: 60%;
   margin: auto;
-}
-
-.results{
-  margin-left: 15%;
-  text-align: left;
 }
 
 .navigation{
