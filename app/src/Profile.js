@@ -1,7 +1,12 @@
 /*global chrome*/
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 
 function Profile() {
+    let [peerInfo, setPeerInfo] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     function detectBrowserAndGetHistory() {
         let browser = '';
         if ((navigator.userAgent.indexOf("Opera") || navigator.userAgent.indexOf('OPR')) !== -1) {
@@ -25,9 +30,59 @@ function Profile() {
         return browser;
     }
 
+    function getPeerInfo() {
+        fetch('http://localhost:8090/Network.xml')
+            .then(response => response.text())
+
+            .then(data => {
+                setPeerInfo(data);
+                console.log(data);
+                setLoading(false);
+            })
+            .catch(error => {
+                setError(error);
+                console.error('Error:', error);
+                setLoading(false);
+            });
+    }
+
+
+    function displayPeerInfo() {
+
+        let parser = new DOMParser();
+        let xmlDoc = parser.parseFromString(peerInfo,"text/xml");
+
+        let profile = xmlDoc.getElementsByTagName("your")[0];
+
+        return (
+            <div>
+                <h1>Profile</h1>
+                <div className='profile-box'>
+                    <p>Peer Name: {profile.getElementsByTagName("name")[0].childNodes[0].nodeValue}</p>
+                    <p>Hash: {profile.getElementsByTagName("hash")[0].childNodes[0].nodeValue}</p>
+                    <p>Peer type: {profile.getElementsByTagName("type")[0].childNodes[0].nodeValue}</p>
+                    <p>Browser: {detectBrowserAndGetHistory()}</p>
+                </div>
+                
+            </div>
+        );
+    }
+
+    useEffect(() => {
+        getPeerInfo();
+    }, []);
+
+    if (loading) {
+        return <div className='App'><h1>Loading...</h1></div>;
+    }
+
+    if (error) {
+        return <div>Error: {error.message}</div>;
+    }
+
     return (
         <div>
-        <h1>{detectBrowserAndGetHistory()}</h1>
+        {peerInfo && displayPeerInfo()}
         </div>
     );
     }

@@ -47,10 +47,13 @@ function Peers() {
                 <Grid item xs={1}>
                     <h2>Index</h2>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
+                    <h2>Name</h2>
+                </Grid>
+                <Grid item xs={2}>
                     <h2>Peer Type</h2>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={2}>
                     <h2>Hash</h2>
                 </Grid>
                 <Grid item xs={5}>
@@ -63,10 +66,13 @@ function Peers() {
                         <Grid item xs={1}>
                             <p>{index}</p>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
+                            <p>{peer.Name}</p>
+                        </Grid>
+                        <Grid item xs={2}>
                             <p>{peer.PeerType}</p>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
                             <p>{peer.Hash}</p>
                         </Grid>
                         <Grid item xs={5}>

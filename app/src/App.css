@@ -36,3 +36,13 @@
 a{
   color: rgb(0, 195, 255);
 }
+
+.profile-box{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 10%;
+  border: 2px solid white;
+  border-radius: 10px;
+  padding: 10px;
+}
