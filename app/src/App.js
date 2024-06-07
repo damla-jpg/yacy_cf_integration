@@ -11,6 +11,7 @@ import Peers from "./Peers";
 import { alpha, styled } from '@mui/material/styles';
 import SearchBar from './components/SearchBar';
 import FullWidthTabs from './components/TopNavBar';
+import Messages from './Messages';
 
 
 const NavbarPagination = styled(Pagination)({
@@ -31,6 +32,9 @@ function App() {
   let [queryResults, setQueryResults] = useState([]);
   let [page, setPage] = useState(1);
   let [value, setValue] = useState(0);
+  const [error, setError] = useState(null);
+  // let [loading, setLoading] = useState(false);
+  const partQuery = usePagination(queryResults, 10);
 
   function getTab(tab_index) {
     setValue(tab_index);
@@ -44,13 +48,17 @@ function App() {
     setPage(value);
 
     partQuery.jump(value);
-    console.log('page:', value);
+    // console.log('page:', value);
   }
 
   const handleSearch = () => {
+    setPage(1);
+    // console.log('loading in handleSearch before setting:', loading);
+    // setLoading(true);
+    // console.log('loading in handleSearch after setting:', loading);
     getSearchResults();
   }
-  const partQuery = usePagination(queryResults, 10);
+  
 
 
   const Navbar = () => {
@@ -65,6 +73,8 @@ function App() {
   const displayResults = () => {
     // console.log('queryResults:', queryResults.length);
     if (queryResults.length > 0) {
+      // setLoading(false);
+      // console.log('loading in display results:', loading);
       return partQuery.currentData().map((item, index) => {
         return (
           <div key={index} className='results'>
@@ -87,7 +97,9 @@ function App() {
       data1 = await response1.json();
     }
     catch (error) {
+      setError(error);
       console.error('Error 1:', error);
+      return;
     }
 
     let numPages = 10;
@@ -100,41 +112,49 @@ function App() {
         const result = await fetch(`http://localhost:8090/yacysearch.json?query=${query}&resource=global&urlmaskfilter=.*&prefermaskfilter=&nav=all&startRecord=${startRecord}`);
         const data = await result.json();
         results = results.concat(data.channels[0].items);
-        console.log('page:', index);
+        // console.log('page:', index);
 
       } catch (error) {
         console.error('Error 2:', error);
       }
 
     }
-    console.log('results:', results);
+    // console.log('results:', results);
     setQueryResults(results);
   }
 
+
   useEffect(() => {
-    getSearchResults();
+    // getSearchResults();
   }, []);
+
+  if (error) {
+    return <div className='Error'>
+        <p>Dear user, please make sure that the YaCy search engine is running on your local machine.</p>
+        <p>Follow the instructions in the README file to start the YaCy search engine or use this link <a href="https://yacy.net/download_installation/" target="_blank" rel="noreferrer">YaCy Installation</a>.</p>
+      </div>;
+  }
 
   if( value  === 0){
     return (
       <div className="App">
-        <FullWidthTabs setValueParent={getTab} />
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <h1>Re-Search Project (with YaCy integration)</h1>
-          </Grid>
-          <Grid item xs={12} className='search-bar'>
-            <SearchBar color='secondary' className='textbox' label="Search for..." variant="outlined" size="small" value={query} onChange={handleSearchChange} />
-            <Button variant="contained" color='secondary' size='large' sx={{ marginLeft: "1%" }} onClick={handleSearch}>Search</Button>
-          </Grid>
-          <Grid item xs={12}  >
-            {queryResults.length > 0 && displayResults()}
-          </Grid>
-          <Grid item xs={12} className='navigation' >
-            {queryResults.length > 0 && <Navbar />}
-          </Grid>
+      <FullWidthTabs setValueParent={getTab} />
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+        <h1>Re-Search Project (with YaCy integration)</h1>
         </Grid>
-        {/* <Profile /> */}
+        <Grid item xs={12} className='search-bar'>
+        <SearchBar color='secondary' className='textbox' label="Search for..." variant="outlined" size="small" value={query} onChange={handleSearchChange} onKeyPress={(e) => e.key === 'Enter' && handleSearch()} />
+        <Button variant="contained" color='secondary' size='large' sx={{ marginLeft: "1%" }} onClick={handleSearch}>Search</Button>
+        </Grid>
+        <Grid item xs={12}  >
+        {queryResults.length > 0 && displayResults()}
+        </Grid>
+        <Grid item xs={12} className='navigation' >
+        {queryResults.length > 0 && <Navbar />}
+        </Grid>
+      </Grid>
+      {/* <Profile /> */}
       </div>
     );
   }
@@ -160,7 +180,7 @@ function App() {
     return (
       <div className="App">
         <FullWidthTabs setValueParent={getTab} />
-        <h1>Messages</h1>
+        <Messages/>
       </div>
     );
   }
