@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 
 export default function AlignItemsList() {
   return (
-    <List sx={{ width: '100%', maxWidth: 360, margin: 'auto'}}>
+    <List sx={{ width: '50%', margin: 'auto'}}>
 
       <ListItem alignItems="flex-start">
         

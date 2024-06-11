@@ -58,3 +58,29 @@ a{
   border-radius: 10px;
   padding: 10px;
 }
+
+.message-box{
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  margin-top: 5%;
+  /* width: 10%; */
+
+  /* create space between items */
+  gap: 10px;
+}
+
+.message-title{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.inbox{
+  width: 100%;
+  min-height: fit-content;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+

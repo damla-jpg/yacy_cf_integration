@@ -47,7 +47,8 @@ export default function MessageBox() {
         '& label': {
             color: '#E0E3E7',
         },
-        width: '60%', 
+        width: '80%', 
+        margin: 'auto',
         
     }),
   );
@@ -57,21 +58,29 @@ const Textarea = styled(TextField)(
         '& .MuiOutlinedInput-root': {
             '& fieldset': {
                 borderColor: theme.palette.mode === 'dark' ? grey[800] : grey[200],
+                
             },
             '&:hover fieldset': {
                 borderColor: theme.palette.mode === 'dark' ? grey[700] : grey[300],
             },
             '&.Mui-focused fieldset': {
                 borderColor: 'secondary',
+               
             },
+        },
+        '& .MuiOutlinedInput-input': {
+            height: '200px',
+            color: 'white',
         },
         '& .MuiInputBase-input': {
             color: "white",
           },
         '& label': {
             color: '#E0E3E7',
+            
         },
-        width: '60%', 
+        width: '80%',
+        margin: 'auto',
         
     }),
 );
@@ -79,6 +88,10 @@ const Textarea = styled(TextField)(
 
 
   return (
-    <Textarea placeholder='Type your message here...'/>
+    <div className='message-box'>
+        <Subject placeholder='Subject'/>
+        <Textarea placeholder='Type your message here...'/>
+    </div>
+    
   );
 }
