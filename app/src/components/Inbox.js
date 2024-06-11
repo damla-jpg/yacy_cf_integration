@@ -6,8 +6,36 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
+import { useState } from 'react';
 
-export default function AlignItemsList() {
+
+
+
+
+export default function AlignItemsList({subject, sender, message}) {
+  const [subject1, setSubject] = useState('');
+  const [sender1, setSender] = useState('');
+  const [message1, setMessage] = useState('');
+
+
+  function fetchInboxItem(){
+    fetch('http://localhost:8090/yacy/message.html')
+    .then(response => response.text())
+    .then(data => {
+      console.log('data:', data);
+      // setSubject(data[0].subject);
+      // setSender(data[0].sender);
+      // setMessage(data[0].message);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
+
+  React.useEffect(() => {
+    fetchInboxItem();
+  }, []);
+
   return (
     <List sx={{ width: '50%', margin: 'auto'}}>
 
@@ -18,7 +46,7 @@ export default function AlignItemsList() {
         </ListItemAvatar>
         
         <ListItemText
-          primary="Summer BBQ"
+          primary= {JSON.stringify(subject1)}
           secondary={
             <React.Fragment>
 
@@ -29,17 +57,17 @@ export default function AlignItemsList() {
                 variant="body2"
                 color="text.secondary"
               >
-                to Scott, Alex, Jennifer
+                {JSON.stringify(sender1)}
               </Typography>
 
 
-              {" — Wish I could come, but I'm out of town this..."}
+              {JSON.stringify(message1)}
             </React.Fragment>
           }
         />
 
       </ListItem>
-      <Divider variant="inset" component="li" />
+      {/* <Divider variant="inset" component="li" /> */}
     </List>
   );
 }
