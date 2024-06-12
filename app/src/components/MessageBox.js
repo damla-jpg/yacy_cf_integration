@@ -1,16 +1,16 @@
 import TextField from '@mui/material/TextField';
-
+import { useState, useEffect } from 'react';
 import { styled } from '@mui/system';
 
 export default function MessageBox() {
-  const blue = {
-    100: '#DAECFF',
-    200: '#b6daff',
-    400: '#3399FF',
-    500: '#007FFF',
-    600: '#0072E5',
-    900: '#003A75',
-  };
+  // const blue = {
+  //   100: '#DAECFF',
+  //   200: '#b6daff',
+  //   400: '#3399FF',
+  //   500: '#007FFF',
+  //   600: '#0072E5',
+  //   900: '#003A75',
+  // };
 
   const grey = {
     50: '#F3F6F9',
@@ -24,9 +24,6 @@ export default function MessageBox() {
     800: '#303740',
     900: '#1C2025',
   };
-
-  const DropdownPeople = styled(TextField)(
-  );
 
   const Subject = styled(TextField)(
     ({ theme }) => ({

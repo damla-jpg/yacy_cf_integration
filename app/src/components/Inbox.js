@@ -18,23 +18,23 @@ export default function AlignItemsList({subject, sender, message}) {
   const [message1, setMessage] = useState('');
 
 
-  function fetchInboxItem(){
-    fetch('http://localhost:8090/yacy/message.html')
-    .then(response => response.text())
-    .then(data => {
-      console.log('data:', data);
-      // setSubject(data[0].subject);
-      // setSender(data[0].sender);
-      // setMessage(data[0].message);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-  }
+  // function fetchInboxItem(){
+  //   fetch('http://localhost:8090/yacy/message.html')
+  //   .then(response => response.text())
+  //   .then(data => {
+  //     console.log('data:', data);
+  //     // setSubject(data[0].subject);
+  //     // setSender(data[0].sender);
+  //     // setMessage(data[0].message);
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error:', error);
+  //   });
+  // }
 
-  React.useEffect(() => {
-    fetchInboxItem();
-  }, []);
+  // React.useEffect(() => {
+  //   fetchInboxItem();
+  // }, []);
 
   return (
     <List sx={{ width: '50%', margin: 'auto'}}>
@@ -42,7 +42,7 @@ export default function AlignItemsList({subject, sender, message}) {
       <ListItem alignItems="flex-start">
         
         <ListItemAvatar>
-          <Avatar alt="Travis Howard" src="/static/images/avatar/2.jpg" />
+          <Avatar alt="Travis Howard" />
         </ListItemAvatar>
         
         <ListItemText
