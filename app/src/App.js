@@ -12,7 +12,7 @@ import { alpha, styled } from '@mui/material/styles';
 import SearchBar from './components/SearchBar';
 import FullWidthTabs from './components/TopNavBar';
 import Messages from './Messages';
-
+import axios from 'axios';
 
 const NavbarPagination = styled(Pagination)({
   '& .MuiPaginationItem-root': {
@@ -123,6 +123,12 @@ function App() {
     setQueryResults(results);
   }
 
+  function getHashReceiver() {
+    axios.get('http://localhost:3001/api/fetch_profile').then((data) => {
+      //this console.log will be in our frontend console
+      console.log(data)
+    })
+  }
 
   useEffect(() => {
     // getSearchResults();
@@ -145,6 +151,7 @@ function App() {
         </Grid>
         <Grid item xs={12} className='search-bar'>
         <SearchBar color='secondary' className='textbox' label="Search for..." variant="outlined" size="small" value={query} onChange={handleSearchChange} onKeyPress={(e) => e.key === 'Enter' && handleSearch()} />
+        <Button variant="contained" color='secondary' size='large' sx={{ marginLeft: "1%" }} onClick={getHashReceiver}>TEST</Button>
         <Button variant="contained" color='secondary' size='large' sx={{ marginLeft: "1%" }} onClick={handleSearch}>Search</Button>
         </Grid>
         <Grid item xs={12}  >

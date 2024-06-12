@@ -2,7 +2,7 @@ import TextField from '@mui/material/TextField';
 import { useState, useEffect } from 'react';
 import { styled } from '@mui/system';
 
-export default function MessageBox() {
+
   // const blue = {
   //   100: '#DAECFF',
   //   200: '#b6daff',
@@ -80,15 +80,8 @@ const Textarea = styled(TextField)(
         margin: 'auto',
         
     }),
+
+
 );
 
-
-
-  return (
-    <div className='message-box'>
-        <Subject placeholder='Subject'/>
-        <Textarea placeholder='Type your message here...'/>
-    </div>
-    
-  );
-}
+export { Subject, Textarea };
