@@ -20,6 +20,17 @@ function Messages() {
     let [subject, setSubject] = useState('');
     let [message, setMessage] = useState('');
     let [error, setError] = useState(null);
+
+    function getMessages() {
+        fetch('http://localhost:3001/api/retrieve_messages')
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
   
     function sendMessage() {
         // if (hashReceiver === '') {
@@ -86,6 +97,7 @@ function Messages() {
             
             <div className='inbox'>
                 <AlignItemsList />
+                <Button variant="contained" color='secondary' size='large' sx={{ float:'right', marginRight: '10%' }} onClick={getMessages}>Refresh</Button>
                 {newMessage && 
                 <div style={{width: "50%"}}>
                     <div className='message-box'>

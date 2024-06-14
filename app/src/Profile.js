@@ -1,4 +1,5 @@
 /*global chrome*/
+import axios from 'axios';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 
@@ -31,12 +32,10 @@ function Profile() {
     }
 
     function getPeerInfo() {
-        fetch('http://localhost:8090/Network.xml')
-            .then(response => response.text())
-
-            .then(data => {
-                setPeerInfo(data);
-                console.log(data);
+        axios.get('http://localhost:3001/profile')
+            .then(response => {
+                setPeerInfo(response.data);
+                console.log(response.data);
                 setLoading(false);
             })
             .catch(error => {

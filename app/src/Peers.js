@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
-
+import axios from 'axios';
+import { Button } from '@mui/material';
 
 function Peers() {
     const [peers, setPeers] = useState([]);
@@ -10,19 +11,14 @@ function Peers() {
 
 
     function getPeers() {
-        fetch('http://localhost:8090/yacy/seedlist.json')
+        axios.get('http://localhost:3001/getPeers')
             .then(response => {
-                if (response.ok) {
-                    return response.json();
-                }
-                throw new Error('Failed to fetch peers');
-            })
-            .then(data => {
-                setPeers(data.peers);
-                console.log('peers:', data.peers);
+                // console.log(response.data.peers);
+                setPeers(response.data.peers);
                 setLoading(false);
             })
             .catch(error => {
+                console.error('Error:', error);
                 setError(error);
                 setLoading(false);
             });
@@ -37,12 +33,13 @@ function Peers() {
     }
 
     if (error) {
-        return <div>Error: {error.message}</div>;
+        return <div className='App'>Error: {error.message}</div>;
     }
 
     return (
         <div>
             <h1>Peers</h1>
+            
             <Grid className='results' container spacing={2}>
                 <Grid item xs={1}>
                     <h2>Index</h2>

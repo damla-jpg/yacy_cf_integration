@@ -60,7 +60,6 @@ function App() {
   }
   
 
-
   const Navbar = () => {
     const count = queryResults.length / 10;
     return (
@@ -93,8 +92,8 @@ function App() {
     let results = [];
     let response1, data1;
     try {
-      response1 = await fetch(`http://localhost:8090/yacysearch.json?query=${query}&resource=global&urlmaskfilter=.*&prefermaskfilter=&nav=all`);
-      data1 = await response1.json();
+      response1 = await axios.get('http://localhost:3001/search?query=' + query);
+      data1 = response1.data;
     }
     catch (error) {
       setError(error);
@@ -109,8 +108,8 @@ function App() {
       const startRecord = index * 10 + 1;
 
       try {
-        const result = await fetch(`http://localhost:8090/yacysearch.json?query=${query}&resource=global&urlmaskfilter=.*&prefermaskfilter=&nav=all&startRecord=${startRecord}`);
-        const data = await result.json();
+        const result = await axios.get('http://localhost:3001/search?query=' + query + '&startRecord=' + startRecord);
+        const data = await result.data;
         results = results.concat(data.channels[0].items);
         // console.log('page:', index);
 
