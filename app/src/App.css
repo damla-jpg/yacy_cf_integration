@@ -1,13 +1,17 @@
+html{
+  background-color: rgb(54, 54, 54);
+  height: 100%;
+}
+
+
 .App {
-  /* put everything in the middle of the page */
   text-align: center;
   justify-content: center;
   background-color: rgb(54, 54, 54);
   color: white;
-  /* i want minimum height to be fit content but if the content 
-  isn't full height i want it to be 100vh */
   min-height: fit-content;
   height: 100vh;
+  min-height: fit-content;
 
 }
 
@@ -17,7 +21,6 @@
   background-color: rgb(54, 54, 54);
   color: white;
   height: 100vh;
-  /* center the text in the div in the middle of the page */
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -40,8 +43,8 @@
   display: flex;
   justify-content: center;
   /* fix at the bottom  of the page */
-  position: fixed;
-  bottom: 2%;
+  position: relative;
+  margin-bottom: 2%;
   width: 100%;
 }
 
@@ -62,18 +65,16 @@ a{
 .message-box{
   display: flex;
   flex-direction: column;
-  /* justify-content: center; */
-  margin-top: 5%;
-  /* width: 10%; */
-
-  /* create space between items */
   gap: 10px;
 }
 
 .message-title{
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: space-between;
+  width: 30%;
+  margin: auto;
+  
 }
 
 .inbox{
@@ -81,6 +82,39 @@ a{
   min-height: fit-content;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  margin: auto;
+}
+
+
+.search-results{
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+  text-align: left;
+  width: 65%;
+  margin: auto;
+  margin-top: 1%;
+  margin-bottom: 1%;
+  height: fit-content;
+}
+
+.results{
+  background-color: rgb(70, 70, 70);
+  margin-bottom: 10px;
+  border-radius: 10px;
+  padding-left: 18px;
+  /* remove text styke */
+  text-decoration: none;
+  color: rgb(255, 255, 255);
+
+}
+
+.a{
+  text-decoration: none;
+}
+
+.results:hover{
+  background-color: rgb(100, 100, 100);
 }
 

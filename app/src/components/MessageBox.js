@@ -44,8 +44,8 @@ import { styled } from '@mui/system';
         '& label': {
             color: '#E0E3E7',
         },
-        width: '80%', 
-        margin: 'auto',
+        width: '90%', 
+
         
     }),
   );
@@ -76,8 +76,7 @@ const Textarea = styled(TextField)(
             color: '#E0E3E7',
             
         },
-        width: '80%',
-        margin: 'auto',
+        width: '90%',
         
     }),
 

@@ -40,7 +40,6 @@ function FullWidthTabs({setValueParent}) {
         );
     }
     let handleChange = (event, newValue) => {
-        console.log('newValue:', newValue);
         setValueParent(newValue);
         setValue(newValue);
     };

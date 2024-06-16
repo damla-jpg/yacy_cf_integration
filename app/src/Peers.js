@@ -40,7 +40,7 @@ function Peers() {
         <div>
             <h1>Peers</h1>
             
-            <Grid className='results' container spacing={2}>
+            <Grid container spacing={2}>
                 <Grid item xs={1}>
                     <h2>Index</h2>
                 </Grid>
@@ -59,7 +59,7 @@ function Peers() {
             </Grid>
             <>
                 {peers && peers.map((peer, index) => (
-                    <Grid className='results' key={index} container spacing={2}>
+                    <Grid key={index} container spacing={2}>
                         <Grid item xs={1}>
                             <p>{index}</p>
                         </Grid>

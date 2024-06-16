@@ -39,7 +39,7 @@ function App() {
   function getTab(tab_index) {
     setValue(tab_index);
   }
-  
+
   let handleSearchChange = (e) => {
     setQuery(e.target.value);
   };
@@ -58,13 +58,13 @@ function App() {
     // console.log('loading in handleSearch after setting:', loading);
     getSearchResults();
   }
-  
+
 
   const Navbar = () => {
     const count = queryResults.length / 10;
     return (
       <Stack spacing={2}>
-        <NavbarPagination count={count} page={page} color="secondary" sx={{color: "white"}} onChange={handlePageChange} />
+        <NavbarPagination count={count} page={page} color="secondary" sx={{ color: "white" }} onChange={handlePageChange} />
       </Stack>
     );
   }
@@ -76,10 +76,12 @@ function App() {
       // console.log('loading in display results:', loading);
       return partQuery.currentData().map((item, index) => {
         return (
-          <div key={index} className='results'>
-            <a href={item.link}>{item.title}</a>
-            <p>{item.description}</p>
+          <a href={item.link} key={index} className='results'>
+          <div key={index}>
+            <p>🔗 {item.title} </p>
+            {/* <p>{item.description}</p> */}
           </div>
+          </a>
         );
       });
     }
@@ -122,12 +124,6 @@ function App() {
     setQueryResults(results);
   }
 
-  function getHashReceiver() {
-    axios.get('http://localhost:3001/api/fetch_profile').then((data) => {
-      //this console.log will be in our frontend console
-      console.log(data)
-    })
-  }
 
   useEffect(() => {
     // getSearchResults();
@@ -135,63 +131,60 @@ function App() {
 
   if (error) {
     return <div className='Error'>
-        <p>Dear user, please make sure that the YaCy search engine is running on your local machine.</p>
-        <p>Follow the instructions in the README file to start the YaCy search engine or use this link <a href="https://yacy.net/download_installation/" target="_blank" rel="noreferrer">YaCy Installation</a>.</p>
-      </div>;
+      <p>Dear user, please make sure that the YaCy search engine is running on your local machine.</p>
+      <p>Follow the instructions in the README file to start the YaCy search engine or use this link <a href="https://yacy.net/download_installation/" target="_blank" rel="noreferrer">YaCy Installation</a>.</p>
+    </div>;
   }
 
-  if( value  === 0){
+  if (value === 0) {
     return (
       <div className="App">
-      <FullWidthTabs setValueParent={getTab} />
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-        <h1>Re-Search Project (with YaCy integration)</h1>
-        </Grid>
-        <Grid item xs={12} className='search-bar'>
-        <SearchBar color='secondary' className='textbox' label="Search for..." variant="outlined" size="small" value={query} onChange={handleSearchChange} onKeyPress={(e) => e.key === 'Enter' && handleSearch()} />
-        <Button variant="contained" color='secondary' size='large' sx={{ marginLeft: "1%" }} onClick={getHashReceiver}>TEST</Button>
-        <Button variant="contained" color='secondary' size='large' sx={{ marginLeft: "1%" }} onClick={handleSearch}>Search</Button>
-        </Grid>
-        <Grid item xs={12}  >
-        {queryResults.length > 0 && displayResults()}
-        </Grid>
-        <Grid item xs={12} className='navigation' >
-        {queryResults.length > 0 && <Navbar />}
-        </Grid>
-      </Grid>
-      {/* <Profile /> */}
-      </div>
-    );
-  }
-  else if(value === 1){
-    return (
-      <div className="App">
-        <FullWidthTabs setValueParent={getTab}/>
-        <Profile />
-      </div>
-    );
-  }
-  else if(value === 2){
-    
-    return (
-      <div className="Peers">
         <FullWidthTabs setValueParent={getTab} />
-        <Peers />
+        <h1>Re-Search Project (with YaCy integration)</h1>
+        <SearchBar color='secondary' className='textbox' label="Search for..." variant="outlined" size="small" value={query} onChange={handleSearchChange} onKeyPress={(e) => e.key === 'Enter' && handleSearch()} />
+        <Button variant="contained" color='secondary' size='large' sx={{ marginLeft: "1%" }} onClick={handleSearch}>Search</Button>
+        <div>
+          <div className='search-results'>
+              {queryResults.length > 0 && displayResults()}
+          </div>
+          <div className='navigation'>
+            {queryResults.length > 0 && <Navbar />}
+          </div>
+        </div>
+        
+        
         
       </div>
     );
   }
-  else if(value === 3){
+  else if (value === 1) {
     return (
       <div className="App">
         <FullWidthTabs setValueParent={getTab} />
-        <Messages/>
+        <Profile />
+      </div>
+    );
+  }
+  else if (value === 2) {
+
+    return (
+      <div className="Peers">
+        <FullWidthTabs setValueParent={getTab} />
+        <Peers />
+
+      </div>
+    );
+  }
+  else if (value === 3) {
+    return (
+      <div className="App">
+        <FullWidthTabs setValueParent={getTab} />
+        <Messages />
       </div>
     );
   }
 
-  
+
 }
 
 export default App;

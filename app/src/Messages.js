@@ -5,77 +5,28 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import { Button } from '@mui/material';
 import { useState } from 'react';
+import { DOMParser } from 'xmldom';
+import Contacts from './components/DropdownContacts';
  
 
 function Messages() {
-    let [newMessage, setNewMessage] = useState(false);
-    const proxyurl = "https://cors-anywhere.herokuapp.com/";
+    let [composeMessage, setComposeMessage] = useState(false);
 
     function toggleNewMessage() {
-        setNewMessage(!newMessage);
+        setComposeMessage(!composeMessage);
     }
 
-    let [ipReceiver, setIpReceiver] = useState('');
-    let [hashReceiver, setHashReceiver] = useState('');
     let [subject, setSubject] = useState('');
     let [message, setMessage] = useState('');
+    const [messageIds, setMessageIds] = useState([]);
+    const [messageContents, setMessageContents] = useState({});
+    const [contacts, setContacts] = useState([]);
+    const [selectedContact, setSelectedContact] = useState('');
+
+
+    let [status, setStatus] = useState(false);
     let [error, setError] = useState(null);
-
-    function getMessages() {
-        fetch('http://localhost:3001/api/retrieve_messages')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-  
-    function sendMessage() {
-        // if (hashReceiver === '') {
-        //     setError('Please enter a receiver');
-        //     return;
-        // }
-
-        // if (hashReceiver.length !== 6) {
-        //     setError('Receiver hash must be 6 characters long');
-        //     return;
-        // }
-
-
-        console.log('hash:', hashReceiver);
-        console.log('subject:', subject);
-        console.log('message:', message);
-        // let hashReceiver = getHashReceiver();
-
-        // try{
-        //     fetch('http://localhost:8090/Message_Send_p.html?hash=' + hashReceiver + '&submit=Compose',
-        //     {
-        //         method: 'POST',
-        //         headers: {
-        //             'Content-Type': 'application/x-www-form-urlencoded',
-        //         },
-        //         body: JSON.stringify({subject: subject, message: message}),
-        //         }
-        //     )
-        //     .then(response => {
-        //     if (response.ok) {
-        //         console.log(response);
-        //     }
-        //     throw new Error('Failed to send message');
-        //     })
-        // }
-        // catch(error){
-        //     setError(error);
-        //     console.error('Error:', error);
-        // }
-          
-    } 
-
-    function handleReceiverChange(e) {
-        setHashReceiver(e.target.value);
-    }
+    let [loading, setLoading] = useState(true);
 
     function handleSubjectChange(e) {
         setSubject(e.target.value);
@@ -85,27 +36,131 @@ function Messages() {
         setMessage(e.target.value);
     }
 
+    function handleContactChange(e) {
+        console.log("selected contact", e.target.value);
+        setSelectedContact(e.target.value);
+    }
+
+
+    function retrieveMessageIds() {
+        fetch('http://localhost:3001/api/retrieve_message_ids')
+        .then(response => response.json())
+        .then(data => {
+            setMessageIds(data.ids);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+
+    React.useEffect(() => {
+        // wait for retrieveMessageIds to finish
+        retrieveMessageIds();
+    }, []);
+
+    React.useEffect(() => {
+        const fetchMessages = async () => {
+            if (messageIds.length > 0) {
+                for (let i = 0; i < messageIds.length; i++) {
+                    const msgID = messageIds[i].id;
+                    try {
+                        const response = await fetch(`http://localhost:3001/api/get_message_contents?messageId=${msgID}`);
+                        const data = await response.json();
+                        setMessageContents(prevState => ({
+                            ...prevState,
+                            [msgID]: data[0]
+                        }));
+                        
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+                setLoading(false);
+            }
+        };
+
+        fetchMessages();
+    }, [messageIds]);
+
+    React.useEffect(() => {
+        fetch('http://localhost:3001/api/get_contact_list')
+        .then(response => response.json())
+        .then(data => {
+            console.log("contacts", data.peers);
+            setContacts(data.peers);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }, []);
+
+
+    function displayMessages() {
+        let messagesArray = [];
+        for (let i = 0; i < messageIds.length; i++) {
+            const msgID = messageIds[i].id;
+            const message = messageContents[msgID];  
+            messagesArray.push(message);
+        }
+        if (messagesArray.length > 0) {
+            return <AlignItemsList items={messagesArray}/>
+        }
+        else {
+            return <div>No messages</div>
+        }
+    }
+
+    function sendMessage() {
+        fetch(`http://localhost:3001/api/send_message?hash=${selectedContact}&subject=${subject}&message=${message}`, {
+            method: 'POST'
+        })
+        .then(response => {
+            response.text()
+            if (response.status === 200) {
+                console.log('Success:', response);
+                setStatus(true);
+                // display popup message
+                alert("Your message has been sent by the P2P birbs <3")
+
+                //reset form
+                setSubject('');
+                setMessage('');
+                setSelectedContact('');
+            }
+        })
+        .then(data => {
+            console.log('Success:', data);
+            setComposeMessage(false);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
 
     return (
         <div>
-            <div className='message-title'>
+            
             <h1>Messages</h1>
-            {/* add a circle add icon button */}
-            <Button color='secondary' onClick={toggleNewMessage} ><AddCircleIcon /></Button>
-            
-            </div>
-            
+        
             <div className='inbox'>
-                <AlignItemsList />
-                <Button variant="contained" color='secondary' size='large' sx={{ float:'right', marginRight: '10%' }} onClick={getMessages}>Refresh</Button>
-                {newMessage && 
+                {/* <div style={{width: "50%"}}> */}
+                    <Button color='secondary' onClick={toggleNewMessage} > <AddCircleIcon /> Compose Message</Button>
+                    {!loading && displayMessages()}
+                {/* </div> */}
+                
+                {/* <Button variant="contained" color='secondary' size='large' sx={{ float:'right', marginRight: '10%' }} onClick={getMessages}>Refresh</Button> */}
+                {composeMessage && 
                 <div style={{width: "50%"}}>
                     <div className='message-box'>
-                    {newMessage && <Button sx={{float: "right", marginRight: "3%"}} color='secondary' onClick={toggleNewMessage} ><CloseIcon /></Button>}
-                    <Subject placeholder='To' value={hashReceiver} onChange={handleReceiverChange} />
-                    <Subject placeholder='Subject' value={subject} onChange={handleSubjectChange} />
-                    <Textarea placeholder='Type your message here...' value={message} onChange={handleMessageChange}/>
-                    <Button variant="contained" color='secondary' size='large' sx={{ float:'right', marginRight: '10%' }} onClick={sendMessage}>Send</Button>
+                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <Contacts options={contacts} selectedValue={selectedContact} onChange={handleContactChange} />
+                            {composeMessage && <Button color='secondary' onClick={toggleNewMessage} ><CloseIcon /></Button>}
+                        </div>
+                        
+                        <Subject placeholder='Subject' value={subject} onChange={handleSubjectChange} />
+                        <Textarea placeholder='Type your message here...' value={message} onChange={handleMessageChange}/>
+                        <Button variant="contained" color='secondary' size='large' sx={{ float:'right', marginRight: '10%' }} onClick={sendMessage}>Send</Button>
                     </div>
                 </div>}
             </div>
