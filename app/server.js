@@ -1,17 +1,22 @@
 // Setup a express server
 const express = require('express');
 const cors = require('cors');
-
 const http = require('http');
 const axios = require('axios');
-
-// require dom-parser
+const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
 const { DOMParser } = require('xmldom');
 
 const app = express();
 const port = 3001;
 
-var request = require("request")
+const MY_DIGEST_USERNAME = '';
+const MY_DIGEST_PASSWORD = '';
+const USERPORT = 8091;
+
+var request = require("request");
 
 app.use(cors({
     origin: 'http://localhost:3000', // allow requests from this origin
@@ -19,10 +24,8 @@ app.use(cors({
 
 async function deleteMessage(messageId) {
     try {
-        const url = 'http://localhost:8090/Messages_p.html?action=delete&object=' + messageId;
+        const url = `http://localhost:${USERPORT}/Messages_p.html?action=delete&object=${messageId}`;
         console.log('url:', url);
-        const MY_DIGEST_USERNAME = '';
-        const MY_DIGEST_PASSWORD = '';
 
         return new Promise((resolve, reject) => {
             request.delete(url, {
@@ -51,10 +54,8 @@ async function deleteMessage(messageId) {
 async function sendMessage(hash, subject, message) {
 
     try {
-        const url = `http://localhost:8090/MessageSend_p.html?hash=${hash}&subject=${subject}&message=${message}`;
+        const url = `http://localhost:${USERPORT}/MessageSend_p.html?hash=${hash}&subject=${subject}&message=${message}`;
         console.log('url:', url);
-        const MY_DIGEST_USERNAME = '';
-        const MY_DIGEST_PASSWORD = '';
 
         return new Promise((resolve, reject) => {
             request.post(url, {
@@ -83,10 +84,8 @@ async function sendMessage(hash, subject, message) {
 async function getContactList() {
     try {
         // TODO: Remove the username and password from here (DONT HARDCODE IT)
-        const url = 'http://localhost:8090/Messages_p.html';
+        const url = `http://localhost:${USERPORT}/Messages_p.html`;
         console.log('url:', url);
-        const MY_DIGEST_USERNAME = '';
-        const MY_DIGEST_PASSWORD = '';
 
         return new Promise((resolve, reject) => {
             request.get(url, {
@@ -111,16 +110,12 @@ async function getContactList() {
         throw error;
     }
 }
-
-
 
 async function getMessageContents(messageId) {
     try {
         // TODO: Remove the username and password from here (DONT HARDCODE IT)
-        const url = 'http://localhost:8090/Messages_p.html?action=view&object=' + messageId;
+        const url = `http://localhost:${USERPORT}/Messages_p.html?action=view&object=${messageId}`;
         console.log('url:', url);
-        const MY_DIGEST_USERNAME = '';
-        const MY_DIGEST_PASSWORD = '';
 
         return new Promise((resolve, reject) => {
             request.get(url, {
@@ -146,13 +141,10 @@ async function getMessageContents(messageId) {
     }
 }
 
-
 async function retrieveMessages() {
     try {
         // TODO: Remove the username and password from here (DONT HARDCODE IT)
-        const url = 'http://localhost:8090/Messages_p.xml';
-        const MY_DIGEST_USERNAME = '';
-        const MY_DIGEST_PASSWORD = '';
+        const url = `http://localhost:${USERPORT}/Messages_p.xml`;
 
         return new Promise((resolve, reject) => {
             request.get(url, {
@@ -180,7 +172,7 @@ async function retrieveMessages() {
 
 async function getPeers() {
     try {
-        const response = await axios.get('http://localhost:8090/yacy/seedlist.json');
+        const response = await axios.get(`http://localhost:${USERPORT}/yacy/seedlist.json`);
         return response.data;
     }
     catch (error) {
@@ -191,7 +183,7 @@ async function getPeers() {
 
 async function getPeerProfile() {
     try {
-        const response = await axios.get('http://localhost:8090/Network.xml');
+        const response = await axios.get(`http://localhost:${USERPORT}/Network.xml`);
         return response.data;
     }
     catch (error) {
@@ -202,7 +194,7 @@ async function getPeerProfile() {
 
 async function getSearchResults(query, startRecord = 1) {
     try {
-        const response = await axios.get(`http://localhost:8090/yacysearch.json?query=${query}&resource=global&urlmaskfilter=.*&prefermaskfilter=&nav=all&startRecord=${startRecord}`);
+        const response = await axios.get(`http://localhost:${USERPORT}/yacysearch.json?query=${query}&resource=global&urlmaskfilter=.*&prefermaskfilter=&nav=all&startRecord=${startRecord}`);
         return response.data;
     }
     catch (error) {
@@ -293,7 +285,6 @@ function parseMessages(document) {
     
 }
 
-
 app.get('/api/retrieve_message_ids', (req, res) => {
     retrieveMessages().then((data) => {
         const parsedData = parseMessageIds(data);
@@ -374,6 +365,53 @@ app.delete('/api/delete_message', (req, res) => {
         res.status(200).json(data);
     }).catch((error) => {
         res.status(500).json({ error: error.message });
+    });
+});
+
+app.get('/api/get_history', (req, res) => {
+    const historyDbPath =  '~/Library/Application Support/Google/Chrome/Default/History';
+    const db = new sqlite3.Database(historyDbPath, (err) => {
+        if (err) {
+          console.error(err.message);
+          res.status(500).send('Error connecting to database');
+          return;
+        }
+      });
+    
+      const query = `SELECT url, title, last_visit_time FROM urls ORDER BY last_visit_time DESC LIMIT 10`;
+    
+      db.all(query, [], (err, rows) => {
+        if (err) {
+          console.error(err.message);
+          res.status(500).send('Error fetching data');
+          return;
+        }
+        res.json(rows);
+      });
+    
+      db.close((err) => {
+        if (err) {
+          console.error(err.message);
+        }
+      });
+});
+
+const upload = multer({ dest: 'history/' });
+
+app.post('/upload', upload.single('files'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).send('No files were uploaded.');
+    }
+
+    const tempPath = req.file.path;
+    const targetPath = path.join(__dirname, 'history', req.file.originalname);
+
+    fs.rename(tempPath, targetPath, err => {
+        if (err) {
+            console.error('Error uploading file:', err);
+            return res.status(500).send('Error uploading file');
+        }
+        res.send('File uploaded');
     });
 });
 

@@ -98,6 +98,7 @@ function Messages() {
 
     function displayMessages() {
         let messagesArray = [];
+
         for (let i = 0; i < messageIds.length; i++) {
             const msgID = messageIds[i].id;
             const message = messageContents[msgID];  
@@ -142,11 +143,13 @@ function Messages() {
         <div>
             
             <h1>Messages</h1>
+            <Button color='secondary' sx={{marginBottom: "5%"}} onClick={toggleNewMessage} > <AddCircleIcon /> Compose Message</Button>
         
             <div className='inbox'>
                 {/* <div style={{width: "50%"}}> */}
-                    <Button color='secondary' onClick={toggleNewMessage} > <AddCircleIcon /> Compose Message</Button>
-                    {!loading && displayMessages()}
+                    
+                {!loading && displayMessages()}
+                {loading && <div style={{display: "flex", flexDirection:"column", margin: "auto", justifyContent: "space-evenly"}}>No messages</div>}
                 {/* </div> */}
                 
                 {/* <Button variant="contained" color='secondary' size='large' sx={{ float:'right', marginRight: '10%' }} onClick={getMessages}>Refresh</Button> */}

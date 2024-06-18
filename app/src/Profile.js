@@ -2,6 +2,8 @@
 import axios from 'axios';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
+import UploadButton from './components/UploadFile';
+import { TextField } from '@mui/material';
 
 function Profile() {
     let [peerInfo, setPeerInfo] = useState('');
@@ -35,7 +37,7 @@ function Profile() {
         axios.get('http://localhost:3001/profile')
             .then(response => {
                 setPeerInfo(response.data);
-                console.log(response.data);
+                // console.log(response.data);
                 setLoading(false);
             })
             .catch(error => {
@@ -67,6 +69,14 @@ function Profile() {
         );
     }
 
+
+
+    function uploadFile() {
+        return (
+            <UploadButton/>
+        );
+    }
+
     useEffect(() => {
         getPeerInfo();
     }, []);
@@ -81,7 +91,8 @@ function Profile() {
 
     return (
         <div>
-        {peerInfo && displayPeerInfo()}
+            {peerInfo && displayPeerInfo()}
+            {uploadFile()}
         </div>
     );
     }
