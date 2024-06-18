@@ -6,6 +6,8 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Button } from '@mui/material';
 import { useState } from 'react';
 import Contacts from '../components/DropdownContacts';
+import { DOMParser } from 'xmldom';
+
  
 
 function Messages() {
@@ -36,11 +38,102 @@ function Messages() {
         setSelectedContact(e.target.value);
     }
 
+    function parseContacts(document) {
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(document, 'text/html');
+            const selectElement = doc.getElementById('peers');
+            const optionsArray = [];
+    
+            if (selectElement) {
+                const options = selectElement.getElementsByTagName('option');
+                for (let i = 0; i < options.length; i++) {
+                    // console.log('Option text:', options[i].childNodes[0].nodeValue, 'Value:', options[i].attributes[0].nodeValue);
+                    optionsArray.push({
+                        hash: options[i].attributes[0].nodeValue,
+                        name: options[i].childNodes[0].nodeValue
+                    });
+                }
+                
+            } else {
+                console.error('Select element not found');
+            }
+    
+            const jsonData = {
+                peers: optionsArray
+            };
+            return jsonData;
+            
+        } catch (error) {
+            console.error('Parsing error:', error);
+        }
+        
+    }
+
+    function parseMessageIds(document) {
+        let parser = new DOMParser();
+        let xmlDoc = parser.parseFromString(document,"text/xml");
+        let messageList = xmlDoc.getElementsByTagName("message");
+        let tempMessageIds = [];
+        // console.log('messageList:', messageList);
+    
+        for (let i = 0; i < messageList.length; i++) {
+            const message = messageList[i];
+            const messageId = message.getAttribute("id");
+            tempMessageIds.push({id: messageId});
+            // console.log('messageId:', messageId);
+        }
+    
+        const jsonData = {
+            ids: tempMessageIds
+        };
+        return jsonData;
+        
+    }
+
+    function parseMessages(document) {
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(document, 'text/html');
+    
+            const message = doc.getElementsByClassName('pairs')[0];
+            const messagesArray = [];
+                      
+            if (message) {
+                const from = message.getElementsByTagName('dd')[0].textContent;
+                const to = message.getElementsByTagName('dd')[1].textContent;
+                const date = message.getElementsByTagName('dd')[2].textContent;
+                const subject = message.getElementsByTagName('dd')[3].textContent;
+                const message1 = message.getElementsByTagName('dd')[4].textContent;
+    
+                messagesArray.push({
+                    from: from,
+                    to: to,
+                    date: date,
+                    subject: subject,
+                    message: message1
+                });
+                
+            } else {
+                console.error('Select element not found');
+            }
+    
+            return messagesArray;
+            
+        } catch (error) {
+            console.error('Parsing error:', error);
+        }
+        
+    }
+
 
     function retrieveMessageIds() {
         fetch('http://localhost:3001/api/retrieve_message_ids')
-        .then(response => response.json())
+        .then(response => response.text())
         .then(data => {
+            // console.log("messageIds", data);
+            data = parseMessageIds(data);
+            // console.log("parsed messageIds", data);
             setMessageIds(data.ids);
         })
         .catch(error => {
@@ -61,7 +154,11 @@ function Messages() {
                     const msgID = messageIds[i].id;
                     try {
                         const response = await fetch(`http://localhost:3001/api/get_message_contents?messageId=${msgID}`);
-                        const data = await response.json();
+
+                        let data = await response.text();
+                        // console.log("data", data);
+                        data = parseMessages(data);
+                        console.log("message", data[0]);
                         setMessageContents(prevState => ({
                             ...prevState,
                             [msgID]: data[0]
@@ -80,9 +177,10 @@ function Messages() {
 
     React.useEffect(() => {
         fetch('http://localhost:3001/api/get_contact_list')
-        .then(response => response.json())
+        .then(response => response.text())
         .then(data => {
-            console.log("contacts", data.peers);
+            data = parseContacts(data);
+            // console.log("contacts", data.peers);
             setContacts(data.peers);
         })
         .catch(error => {
