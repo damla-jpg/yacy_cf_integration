@@ -1,9 +1,7 @@
-/*global chrome*/
 import axios from 'axios';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import UploadButton from './components/UploadFile';
-import { TextField } from '@mui/material';
+import UploadButton from '../components/UploadFile';
 
 function Profile() {
     let [peerInfo, setPeerInfo] = useState('');

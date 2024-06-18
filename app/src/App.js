@@ -3,15 +3,15 @@ import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import './App.css';
 import * as React from 'react';
-import usePagination from "./Pagination";
-import Grid from '@mui/material/Grid';
+import usePagination from "./components/Pagination";
 import Button from '@mui/material/Button';
-import Profile from './Profile';
-import Peers from "./Peers";
+import Profile from './pages/Profile';
+import Peers from "./pages/Peers";
 import { alpha, styled } from '@mui/material/styles';
 import SearchBar from './components/SearchBar';
 import FullWidthTabs from './components/TopNavBar';
-import Messages from './Messages';
+import FilteringSettings from './pages/FilteringSettings';
+import Messages from './pages/Messages';
 import axios from 'axios';
 
 const NavbarPagination = styled(Pagination)({
@@ -180,6 +180,15 @@ function App() {
       <div className="App">
         <FullWidthTabs setValueParent={getTab} />
         <Messages />
+      </div>
+    );
+  }
+
+  else if (value === 4) {
+    return (
+      <div className="App">
+        <FullWidthTabs setValueParent={getTab} />
+        <FilteringSettings />
       </div>
     );
   }

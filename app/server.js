@@ -14,7 +14,7 @@ const port = 3001;
 
 const MY_DIGEST_USERNAME = '';
 const MY_DIGEST_PASSWORD = '';
-const USERPORT = 8091;
+const USERPORT = 8090;
 
 var request = require("request");
 

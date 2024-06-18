@@ -1,12 +1,11 @@
 import * as React from 'react';
-import {Subject, Textarea} from './components/MessageBox';
-import AlignItemsList from './components/Inbox';
+import {Subject, Textarea} from '../components/MessageBox';
+import AlignItemsList from '../components/Inbox';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import { Button } from '@mui/material';
 import { useState } from 'react';
-import { DOMParser } from 'xmldom';
-import Contacts from './components/DropdownContacts';
+import Contacts from '../components/DropdownContacts';
  
 
 function Messages() {
@@ -22,10 +21,6 @@ function Messages() {
     const [messageContents, setMessageContents] = useState({});
     const [contacts, setContacts] = useState([]);
     const [selectedContact, setSelectedContact] = useState('');
-
-
-    let [status, setStatus] = useState(false);
-    let [error, setError] = useState(null);
     let [loading, setLoading] = useState(true);
 
     function handleSubjectChange(e) {
@@ -120,7 +115,6 @@ function Messages() {
             response.text()
             if (response.status === 200) {
                 console.log('Success:', response);
-                setStatus(true);
                 // display popup message
                 alert("Your message has been sent by the P2P birbs <3")
 

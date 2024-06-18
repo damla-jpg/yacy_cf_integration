@@ -63,6 +63,7 @@ function FullWidthTabs({setValueParent}) {
                     <Tab label="profile" {...a11yProps(1)} />
                     <Tab label="peers" {...a11yProps(2)} />
                     <Tab label="messages" {...a11yProps(3)} />
+                    <Tab label="filtering settings" {...a11yProps(4)} />
                 </Tabs>
             </AppBar>
             <SwipeableViews
@@ -81,6 +82,9 @@ function FullWidthTabs({setValueParent}) {
                 </TabPanel>
                 <TabPanel value={value} index={3} dir={theme.direction}>
                     Item Four
+                </TabPanel>
+                <TabPanel value={value} index={4} dir={theme.direction}>
+                    Item Five
                 </TabPanel>
             </SwipeableViews>
         </Box>

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import axios from 'axios';
-import { Button } from '@mui/material';
 
 function Peers() {
     const [peers, setPeers] = useState([]);

@@ -72,12 +72,6 @@ const StyledInputLabel = styled(InputLabel)(({ theme }) => ({
 }));
 
 
-
-
-
-
-{/* MuiSelect-select MuiSelect-outlined MuiInputBase-input MuiOutlinedInput-input css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input"><span class="notranslate">​</span></div> */}
-
 export default function Contacts({ options, selectedValue, onChange }) {
     const handleChange = (event) => {
         onChange(event);
