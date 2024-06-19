@@ -63,7 +63,7 @@ function FullWidthTabs({setValueParent}) {
                     <Tab label="profile" {...a11yProps(1)} />
                     <Tab label="peers" {...a11yProps(2)} />
                     <Tab label="messages" {...a11yProps(3)} />
-                    <Tab label="filtering settings" {...a11yProps(4)} />
+                    <Tab label="settings" {...a11yProps(4)} />
                 </Tabs>
             </AppBar>
             <SwipeableViews

@@ -249,7 +249,7 @@ function Messages() {
                 <div style={{width: "50%"}}>
                     <div className='message-box'>
                         <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <Contacts options={contacts} selectedValue={selectedContact} onChange={handleContactChange} />
+                            <Contacts options={contacts} selectedValue={selectedContact} onChange={handleContactChange} name={"Choose contact"}/>
                             {composeMessage && <Button color='secondary' onClick={toggleNewMessage} ><CloseIcon /></Button>}
                         </div>
                         

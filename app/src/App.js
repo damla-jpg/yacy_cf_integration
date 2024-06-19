@@ -10,7 +10,7 @@ import Peers from "./pages/Peers";
 import { alpha, styled } from '@mui/material/styles';
 import SearchBar from './components/SearchBar';
 import FullWidthTabs from './components/TopNavBar';
-import FilteringSettings from './pages/FilteringSettings';
+import Settings from './pages/Settings';
 import Messages from './pages/Messages';
 import axios from 'axios';
 
@@ -188,7 +188,7 @@ function App() {
     return (
       <div className="App">
         <FullWidthTabs setValueParent={getTab} />
-        <FilteringSettings />
+        <Settings />
       </div>
     );
   }

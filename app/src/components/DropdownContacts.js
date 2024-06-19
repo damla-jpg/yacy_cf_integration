@@ -41,6 +41,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
       borderColor: '#80bdff',
       boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
     },
+    color: 'white',
 
   },
 //   change the icon color
@@ -72,7 +73,7 @@ const StyledInputLabel = styled(InputLabel)(({ theme }) => ({
 }));
 
 
-export default function Contacts({ options, selectedValue, onChange }) {
+export default function Contacts({ options, selectedValue, onChange, name }) {
     const handleChange = (event) => {
         onChange(event);
       };
@@ -85,7 +86,7 @@ export default function Contacts({ options, selectedValue, onChange }) {
     return (
         <Box sx={style}>
             <FormControl fullWidth variant='standard'>
-                <StyledInputLabel >Choose contact</StyledInputLabel>
+                <StyledInputLabel >{name}</StyledInputLabel>
                 <Select
                     // labelId="demo-customized-select-label"
                     // id="demo-customized-select"
