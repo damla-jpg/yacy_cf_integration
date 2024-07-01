@@ -4,6 +4,7 @@ import { DOMParser } from 'xmldom';
 import Contacts from '../components/DropdownContacts';
 import axios from 'axios';
 import AlertDialogSlide from '../components/PopUpAlert';
+import { Button } from '@mui/material';
 
 function Settings() {
     const [loading, setLoading] = useState(true);
@@ -89,20 +90,34 @@ function Settings() {
 
     }
 
+    function delete_peer(hash) {
+        axios.delete('http://localhost:3001/api/delete_peer_from_whitelist?hash=' + hash)
+            .then(response => { 
+            console.log("sending", response); 
+            setLoading(false); })
+            .catch(error => { 
+            console.error('Error:', error); 
+            })
+    }
+
     function displayWhitelist() {
         if (whitelist.length > 0) {
             return (
                 <div>
                     <h2>Whitelist:</h2>
-                    <div style={{textAlign:"left"}}>
+                    <div style={{ textAlign: "left" }}>
 
                         {whitelist.map((peer, index) => {
                             return (
-                                <p key={index} style={{padding: "10px"}}>
+                                <div style={{display:"flex", flexDirection: "row", justifyContent: "space-evenly"}}>
+                                <p key={index} style={{ marginBottom: "10px" }}>
                                     Hash: {peer.hash} - IP: {peer.ip} - Port: {peer.port}
                                 </p>
+                                <Button variant="contained" color="error" onClick={() => delete_peer(peer.hash)}>Delete</Button>
+                                </div>
                             )
                         })}
+                        
                     </div>
 
                 </div>
