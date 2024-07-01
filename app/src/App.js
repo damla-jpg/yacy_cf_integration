@@ -13,6 +13,7 @@ import FullWidthTabs from './components/TopNavBar';
 import Settings from './pages/Settings';
 import Messages from './pages/Messages';
 import axios from 'axios';
+import { Link } from '@mui/material';
 
 const NavbarPagination = styled(Pagination)({
   '& .MuiPaginationItem-root': {
@@ -33,7 +34,6 @@ function App() {
   let [page, setPage] = useState(1);
   let [value, setValue] = useState(0);
   const [error, setError] = useState(null);
-  // let [loading, setLoading] = useState(false);
   const partQuery = usePagination(queryResults, 10);
 
   function getTab(tab_index) {
@@ -46,19 +46,14 @@ function App() {
 
   let handlePageChange = (event, value) => {
     setPage(value);
-
     partQuery.jump(value);
-    // console.log('page:', value);
   }
 
   const handleSearch = () => {
     setPage(1);
-    // console.log('loading in handleSearch before setting:', loading);
-    // setLoading(true);
-    // console.log('loading in handleSearch after setting:', loading);
+    console.log('search:', query);
     getSearchResults();
   }
-
 
   const Navbar = () => {
     const count = queryResults.length / 10;
@@ -69,17 +64,29 @@ function App() {
     );
   }
 
+  function appendLink(link) {
+    const body = {
+      query: query,
+      link: link
+    };
+    
+    axios.post('http://localhost:3001/api/get_click', body)
+    .then((response) => {
+      console.log(response);
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+    
+  }
+
   const displayResults = () => {
-    // console.log('queryResults:', queryResults.length);
     if (queryResults.length > 0) {
-      // setLoading(false);
-      // console.log('loading in display results:', loading);
       return partQuery.currentData().map((item, index) => {
         return (
-          <a href={item.link} key={index} className='results'>
+          <a href={item.link} key={index} className='results' target='_blank' onClick={() => appendLink(item.link)}>
           <div key={index}>
             <p>🔗 {item.title} </p>
-            {/* <p>{item.description}</p> */}
           </div>
           </a>
         );
@@ -91,6 +98,7 @@ function App() {
   }
 
   const getSearchResults = async () => {
+
     let results = [];
     let response1, data1;
     try {
@@ -123,11 +131,6 @@ function App() {
     // console.log('results:', results);
     setQueryResults(results);
   }
-
-
-  useEffect(() => {
-    // getSearchResults();
-  }, []);
 
   if (error) {
     return <div className='Error'>

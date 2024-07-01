@@ -44,7 +44,7 @@ export default function UploadButton() {
     const handleChange = (e) => {
         // console.log(e.target.files[0]);
         setFile(e.target.files[0]);
-        console.log('FILLLLLEEEEEEEEE:', file);
+        // console.log('FILLLLLEEEEEEEEE:', file);
     };
 
     const handleUpload = async () => {
