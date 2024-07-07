@@ -1,7 +1,6 @@
 import axios from 'axios';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import UploadButton from '../components/UploadFile';
 const apiPort = process.env.REACT_APP_API_PORT;
 
 function Profile() {
@@ -68,14 +67,6 @@ function Profile() {
         );
     }
 
-
-
-    function uploadFile() {
-        return (
-            <UploadButton/>
-        );
-    }
-
     useEffect(() => {
         getPeerInfo();
     }, []);
@@ -91,7 +82,6 @@ function Profile() {
     return (
         <div>
             {peerInfo && displayPeerInfo()}
-            {/* {uploadFile()} */}
         </div>
     );
     }

@@ -60,10 +60,11 @@ function FullWidthTabs({setValueParent}) {
                     aria-label="full width tabs example"
                 >
                     <Tab label="search" {...a11yProps(0)} />
-                    <Tab label="profile" {...a11yProps(1)} />
-                    <Tab label="peers" {...a11yProps(2)} />
-                    <Tab label="messages" {...a11yProps(3)} />
-                    <Tab label="settings" {...a11yProps(4)} />
+                    <Tab label="explore" {...a11yProps(1)} />
+                    <Tab label="profile" {...a11yProps(2)} />
+                    <Tab label="peers" {...a11yProps(3)} />
+                    <Tab label="messages" {...a11yProps(4)} />
+                    <Tab label="settings" {...a11yProps(5)} />
                 </Tabs>
             </AppBar>
             <SwipeableViews
@@ -85,6 +86,9 @@ function FullWidthTabs({setValueParent}) {
                 </TabPanel>
                 <TabPanel value={value} index={4} dir={theme.direction}>
                     Item Five
+                </TabPanel>
+                <TabPanel value={value} index={5} dir={theme.direction}>
+                    Item Six
                 </TabPanel>
             </SwipeableViews>
         </Box>

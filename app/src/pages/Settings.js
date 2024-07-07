@@ -9,7 +9,6 @@ const apiPort = process.env.REACT_APP_API_PORT;
 
 function Settings() {
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [contacts, setContacts] = useState([]);
     const [selectedContact, setSelectedContact] = useState('');
     const [peers, setPeers] = useState([]);
@@ -156,7 +155,6 @@ function Settings() {
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    setError(error);
                 });
         }
         getPeers();
@@ -172,7 +170,6 @@ function Settings() {
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    setError(error);
                     setLoading(true);
                 });
         }

@@ -144,7 +144,7 @@ function Messages() {
     React.useEffect(() => {
         // wait for retrieveMessageIds to finish
         retrieveMessageIds();
-    }, []);
+    }, [messageIds]);
 
     React.useEffect(() => {
         const fetchMessages = async () => {

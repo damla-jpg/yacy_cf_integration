@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import './App.css';
@@ -13,6 +13,7 @@ import FullWidthTabs from './components/TopNavBar';
 import Settings from './pages/Settings';
 import Messages from './pages/Messages';
 import axios from 'axios';
+import Explore from './pages/Explore';
 
 const NavbarPagination = styled(Pagination)({
   '& .MuiPaginationItem-root': {
@@ -70,15 +71,15 @@ function App() {
       query: query,
       link: link
     };
-    
+
     axios.post(`http://localhost:${apiPort}/api/get_click`, body)
-    .then((response) => {
-      console.log(response);
-    })
-    .catch((error) => {
-      console.error('Error:', error);
-    });
-    
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+
   }
 
   const displayResults = () => {
@@ -86,9 +87,9 @@ function App() {
       return partQuery.currentData().map((item, index) => {
         return (
           <a href={item.link} key={index} className='results' target='_blank' onClick={() => appendLink(item.link)}>
-          <div key={index}>
-            <p>🔗 {item.title} </p>
-          </div>
+            <div key={index}>
+              <p>🔗 {item.title} </p>
+            </div>
           </a>
         );
       });
@@ -122,14 +123,12 @@ function App() {
         const result = await axios.get(`http://localhost:${apiPort}/search?query=${query}&startRecord=${startRecord}`);
         const data = await result.data;
         results = results.concat(data.channels[0].items);
-        // console.log('page:', index);
 
       } catch (error) {
         console.error('Error 2:', error);
       }
 
     }
-    // console.log('results:', results);
     setQueryResults(results);
   }
 
@@ -149,15 +148,15 @@ function App() {
         <Button variant="contained" color='secondary' size='large' sx={{ marginLeft: "1%" }} onClick={handleSearch}>Search</Button>
         <div>
           <div className='search-results'>
-              {queryResults.length > 0 && displayResults()}
+            {queryResults.length > 0 && displayResults()}
           </div>
           <div className='navigation'>
             {queryResults.length > 0 && <Navbar />}
           </div>
         </div>
-        
-        
-        
+
+
+
       </div>
     );
   }
@@ -165,11 +164,19 @@ function App() {
     return (
       <div className="App">
         <FullWidthTabs setValueParent={getTab} />
-        <Profile />
+        <Explore />
       </div>
     );
   }
   else if (value === 2) {
+    return (
+      <div className="App">
+        <FullWidthTabs setValueParent={getTab} />
+        <Profile />
+      </div>
+    );
+  }
+  else if (value === 3) {
 
     return (
       <div className="Peers">
@@ -179,7 +186,7 @@ function App() {
       </div>
     );
   }
-  else if (value === 3) {
+  else if (value === 4) {
     return (
       <div className="App">
         <FullWidthTabs setValueParent={getTab} />
@@ -188,7 +195,7 @@ function App() {
     );
   }
 
-  else if (value === 4) {
+  else if (value === 5) {
     return (
       <div className="App">
         <FullWidthTabs setValueParent={getTab} />
@@ -196,7 +203,6 @@ function App() {
       </div>
     );
   }
-
 
 }
 
