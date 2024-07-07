@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import UploadButton from '../components/UploadFile';
+const apiPort = process.env.REACT_APP_API_PORT;
 
 function Profile() {
     let [peerInfo, setPeerInfo] = useState('');
@@ -32,7 +33,7 @@ function Profile() {
     }
 
     function getPeerInfo() {
-        axios.get('http://localhost:3001/profile')
+        axios.get(`http://localhost:${apiPort}/profile`)
             .then(response => {
                 setPeerInfo(response.data);
                 // console.log(response.data);
@@ -90,7 +91,7 @@ function Profile() {
     return (
         <div>
             {peerInfo && displayPeerInfo()}
-            {uploadFile()}
+            {/* {uploadFile()} */}
         </div>
     );
     }

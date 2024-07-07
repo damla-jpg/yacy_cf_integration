@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import axios from 'axios';
 import { useState } from 'react';
 import styled from 'styled-components';
+const apiPort = process.env.REACT_APP_API_PORT;
 
 const Textarea = styled(TextField)(
     ({ theme }) => ({
@@ -57,7 +58,7 @@ export default function UploadButton() {
         }
 
         try {
-            const response = await axios.post('http://localhost:3001/upload', formData, {
+            const response = await axios.post(`http://localhost:${apiPort}/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

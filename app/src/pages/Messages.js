@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Subject, Textarea} from '../components/MessageBox';
+import { Subject, Textarea } from '../components/MessageBox';
 import AlignItemsList from '../components/Inbox';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
@@ -7,8 +7,7 @@ import { Button } from '@mui/material';
 import { useState } from 'react';
 import Contacts from '../components/DropdownContacts';
 import { DOMParser } from 'xmldom';
-
- 
+const apiPort = process.env.REACT_APP_API_PORT;
 
 function Messages() {
     let [composeMessage, setComposeMessage] = useState(false);
@@ -44,7 +43,7 @@ function Messages() {
             const doc = parser.parseFromString(document, 'text/html');
             const selectElement = doc.getElementById('peers');
             const optionsArray = [];
-    
+
             if (selectElement) {
                 const options = selectElement.getElementsByTagName('option');
                 for (let i = 0; i < options.length; i++) {
@@ -54,58 +53,58 @@ function Messages() {
                         name: options[i].childNodes[0].nodeValue
                     });
                 }
-                
+
             } else {
                 console.error('Select element not found');
             }
-    
+
             const jsonData = {
                 peers: optionsArray
             };
             return jsonData;
-            
+
         } catch (error) {
             console.error('Parsing error:', error);
         }
-        
+
     }
 
     function parseMessageIds(document) {
         let parser = new DOMParser();
-        let xmlDoc = parser.parseFromString(document,"text/xml");
+        let xmlDoc = parser.parseFromString(document, "text/xml");
         let messageList = xmlDoc.getElementsByTagName("message");
         let tempMessageIds = [];
         // console.log('messageList:', messageList);
-    
+
         for (let i = 0; i < messageList.length; i++) {
             const message = messageList[i];
             const messageId = message.getAttribute("id");
-            tempMessageIds.push({id: messageId});
+            tempMessageIds.push({ id: messageId });
             // console.log('messageId:', messageId);
         }
-    
+
         const jsonData = {
             ids: tempMessageIds
         };
         return jsonData;
-        
+
     }
 
     function parseMessages(document) {
         try {
             const parser = new DOMParser();
             const doc = parser.parseFromString(document, 'text/html');
-    
+
             const message = doc.getElementsByClassName('pairs')[0];
             const messagesArray = [];
-                      
+
             if (message) {
                 const from = message.getElementsByTagName('dd')[0].textContent;
                 const to = message.getElementsByTagName('dd')[1].textContent;
                 const date = message.getElementsByTagName('dd')[2].textContent;
                 const subject = message.getElementsByTagName('dd')[3].textContent;
                 const message1 = message.getElementsByTagName('dd')[4].textContent;
-    
+
                 messagesArray.push({
                     from: from,
                     to: to,
@@ -113,32 +112,32 @@ function Messages() {
                     subject: subject,
                     message: message1
                 });
-                
+
             } else {
                 console.error('Select element not found');
             }
-    
+
             return messagesArray;
-            
+
         } catch (error) {
             console.error('Parsing error:', error);
         }
-        
+
     }
 
 
     function retrieveMessageIds() {
-        fetch('http://localhost:3001/api/retrieve_message_ids')
-        .then(response => response.text())
-        .then(data => {
-            // console.log("messageIds", data);
-            data = parseMessageIds(data);
-            // console.log("parsed messageIds", data);
-            setMessageIds(data.ids);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+        fetch(`http://localhost:${apiPort}/api/retrieve_message_ids`)
+            .then(response => response.text())
+            .then(data => {
+                // console.log("messageIds", data);
+                data = parseMessageIds(data);
+                // console.log("parsed messageIds", data);
+                setMessageIds(data.ids);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
 
 
@@ -153,7 +152,7 @@ function Messages() {
                 for (let i = 0; i < messageIds.length; i++) {
                     const msgID = messageIds[i].id;
                     try {
-                        const response = await fetch(`http://localhost:3001/api/get_message_contents?messageId=${msgID}`);
+                        const response = await fetch(`http://localhost:${apiPort}/api/get_message_contents?messageId=${msgID}`);
 
                         let data = await response.text();
                         // console.log("data", data);
@@ -163,7 +162,7 @@ function Messages() {
                             ...prevState,
                             [msgID]: data[0]
                         }));
-                        
+
                     } catch (error) {
                         console.error('Error:', error);
                     }
@@ -176,16 +175,16 @@ function Messages() {
     }, [messageIds]);
 
     React.useEffect(() => {
-        fetch('http://localhost:3001/api/get_contact_list')
-        .then(response => response.text())
-        .then(data => {
-            data = parseContacts(data);
-            // console.log("contacts", data.peers);
-            setContacts(data.peers);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+        fetch(`http://localhost:${apiPort}/api/get_contact_list`)
+            .then(response => response.text())
+            .then(data => {
+                data = parseContacts(data);
+                // console.log("contacts", data.peers);
+                setContacts(data.peers);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }, []);
 
 
@@ -194,11 +193,11 @@ function Messages() {
 
         for (let i = 0; i < messageIds.length; i++) {
             const msgID = messageIds[i].id;
-            const message = messageContents[msgID];  
+            const message = messageContents[msgID];
             messagesArray.push(message);
         }
         if (messagesArray.length > 0) {
-            return <AlignItemsList items={messagesArray}/>
+            return <AlignItemsList items={messagesArray} />
         }
         else {
             return <div>No messages</div>
@@ -206,58 +205,58 @@ function Messages() {
     }
 
     function sendMessage() {
-        fetch(`http://localhost:3001/api/send_message?hash=${selectedContact}&subject=${subject}&message=${message}`, {
+        fetch(`http://localhost:${apiPort}/api/send_message?hash=${selectedContact}&subject=${subject}&message=${message}`, {
             method: 'POST'
         })
-        .then(response => {
-            response.text()
-            if (response.status === 200) {
-                console.log('Success:', response);
-                // display popup message
-                alert("Your message has been sent by the P2P birbs <3")
+            .then(response => {
+                response.text()
+                if (response.status === 200) {
+                    console.log('Success:', response);
+                    // display popup message
+                    alert("Your message has been sent by the P2P birbs <3")
 
-                //reset form
-                setSubject('');
-                setMessage('');
-                setSelectedContact('');
-            }
-        })
-        .then(data => {
-            console.log('Success:', data);
-            setComposeMessage(false);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+                    //reset form
+                    setSubject('');
+                    setMessage('');
+                    setSelectedContact('');
+                }
+            })
+            .then(data => {
+                console.log('Success:', data);
+                setComposeMessage(false);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
 
     return (
         <div>
-            
+
             <h1>Messages</h1>
-            <Button color='secondary' sx={{marginBottom: "5%"}} onClick={toggleNewMessage} > <AddCircleIcon /> Compose Message</Button>
-        
+            <Button color='secondary' sx={{ marginBottom: "5%" }} onClick={toggleNewMessage} > <AddCircleIcon /> Compose Message</Button>
+
             <div className='inbox'>
                 {/* <div style={{width: "50%"}}> */}
-                    
+
                 {!loading && displayMessages()}
-                {loading && <div style={{display: "flex", flexDirection:"column", margin: "auto", justifyContent: "space-evenly"}}>No messages</div>}
+                {loading && <div style={{ display: "flex", flexDirection: "column", margin: "auto", justifyContent: "space-evenly" }}>No messages</div>}
                 {/* </div> */}
-                
+
                 {/* <Button variant="contained" color='secondary' size='large' sx={{ float:'right', marginRight: '10%' }} onClick={getMessages}>Refresh</Button> */}
-                {composeMessage && 
-                <div style={{width: "50%"}}>
-                    <div className='message-box'>
-                        <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                            <Contacts options={contacts} selectedValue={selectedContact} onChange={handleContactChange} name={"Choose contact"}/>
-                            {composeMessage && <Button color='secondary' onClick={toggleNewMessage} ><CloseIcon /></Button>}
+                {composeMessage &&
+                    <div style={{ width: "50%" }}>
+                        <div className='message-box'>
+                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <Contacts options={contacts} selectedValue={selectedContact} onChange={handleContactChange} name={"Choose contact"} />
+                                {composeMessage && <Button color='secondary' onClick={toggleNewMessage} ><CloseIcon /></Button>}
+                            </div>
+
+                            <Subject placeholder='Subject' value={subject} onChange={handleSubjectChange} />
+                            <Textarea placeholder='Type your message here...' value={message} onChange={handleMessageChange} />
+                            <Button variant="contained" color='secondary' size='large' sx={{ float: 'right', marginRight: '10%' }} onClick={sendMessage}>Send</Button>
                         </div>
-                        
-                        <Subject placeholder='Subject' value={subject} onChange={handleSubjectChange} />
-                        <Textarea placeholder='Type your message here...' value={message} onChange={handleMessageChange}/>
-                        <Button variant="contained" color='secondary' size='large' sx={{ float:'right', marginRight: '10%' }} onClick={sendMessage}>Send</Button>
-                    </div>
-                </div>}
+                    </div>}
             </div>
         </div>
     );

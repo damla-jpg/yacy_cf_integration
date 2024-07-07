@@ -5,6 +5,7 @@ import Contacts from '../components/DropdownContacts';
 import axios from 'axios';
 import AlertDialogSlide from '../components/PopUpAlert';
 import { Button } from '@mui/material';
+const apiPort = process.env.REACT_APP_API_PORT;
 
 function Settings() {
     const [loading, setLoading] = useState(true);
@@ -32,7 +33,7 @@ function Settings() {
 
             const agreeAction = async () => {
                 console.log("Agree", selectedPeer);
-                await axios.post(`http://localhost:3001/api/create_whitelist?ip=${selectedPeer.IP}&port=${selectedPeer.Port}&hash=${selectedPeer.Hash}`)
+                await axios.post(`http://localhost:${apiPort}/api/create_whitelist?ip=${selectedPeer.IP}&port=${selectedPeer.Port}&hash=${selectedPeer.Hash}`)
                     .then(response => {
                         setLoading(false);
                         console.log(response);
@@ -91,7 +92,7 @@ function Settings() {
     }
 
     function delete_peer(hash) {
-        axios.delete('http://localhost:3001/api/delete_peer_from_whitelist?hash=' + hash)
+        axios.delete(`http://localhost:${apiPort}/api/delete_peer_from_whitelist?hash=${hash}`)
             .then(response => { 
             console.log("sending", response); 
             setLoading(false); })
@@ -134,21 +135,21 @@ function Settings() {
     }
 
     useEffect(() => {
-        fetch('http://localhost:3001/api/get_contact_list')
+        fetch(`http://localhost:${apiPort}/api/get_contact_list`)
             .then(response => response.text())
             .then(data => {
-                data = parseContacts(data);
-                // console.log("contacts", data.peers);
-                setContacts(data.peers);
+            data = parseContacts(data);
+            // console.log("contacts", data.peers);
+            setContacts(data.peers);
             })
             .catch(error => {
-                console.error('Error:', error);
+            console.error('Error:', error);
             });
     }, []);
 
     useEffect(() => {
         function getPeers() {
-            axios.get('http://localhost:3001/getPeers')
+            axios.get(`http://localhost:${apiPort}/getPeers`)
                 .then(response => {
                     // console.log(response.data.peers);
                     setPeers(response.data.peers);
@@ -163,7 +164,7 @@ function Settings() {
 
     useEffect(() => {
         function getWhitelist() {
-            axios.get('http://localhost:3001/api/get_whitelist')
+            axios.get(`http://localhost:${apiPort}/api/get_whitelist`)
                 .then(response => {
                     console.log(response.data);
                     setWhitelist(response.data.whitelist);

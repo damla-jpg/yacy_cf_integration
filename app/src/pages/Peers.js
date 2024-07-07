@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import axios from 'axios';
+const apiPort = process.env.REACT_APP_API_PORT;
 
 function Peers() {
     const [peers, setPeers] = useState([]);
@@ -10,7 +11,7 @@ function Peers() {
 
 
     function getPeers() {
-        axios.get('http://localhost:3001/getPeers')
+        axios.get(`http://localhost:${apiPort}/getPeers`)
             .then(response => {
                 // console.log(response.data.peers);
                 setPeers(response.data.peers);
