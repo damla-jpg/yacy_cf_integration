@@ -8,6 +8,7 @@ import { useState } from 'react';
 import Contacts from '../components/DropdownContacts';
 import { DOMParser } from 'xmldom';
 const apiPort = process.env.REACT_APP_API_PORT;
+const backendUrl = process.env.REACT_APP_BACKEND_ADDRESS;
 
 function Messages() {
     let [composeMessage, setComposeMessage] = useState(false);
@@ -127,7 +128,7 @@ function Messages() {
 
 
     function retrieveMessageIds() {
-        fetch(`http://localhost:${apiPort}/api/retrieve_message_ids`)
+        fetch(`http://${backendUrl}:${apiPort}/api/retrieve_message_ids`)
             .then(response => response.text())
             .then(data => {
                 // console.log("messageIds", data);
@@ -152,7 +153,7 @@ function Messages() {
                 for (let i = 0; i < messageIds.length; i++) {
                     const msgID = messageIds[i].id;
                     try {
-                        const response = await fetch(`http://localhost:${apiPort}/api/get_message_contents?messageId=${msgID}`);
+                        const response = await fetch(`http://${backendUrl}:${apiPort}/api/get_message_contents?messageId=${msgID}`);
 
                         let data = await response.text();
                         // console.log("data", data);
@@ -175,7 +176,7 @@ function Messages() {
     }, [messageIds]);
 
     React.useEffect(() => {
-        fetch(`http://localhost:${apiPort}/api/get_contact_list`)
+        fetch(`http://${backendUrl}:${apiPort}/api/get_contact_list`)
             .then(response => response.text())
             .then(data => {
                 data = parseContacts(data);
@@ -205,7 +206,7 @@ function Messages() {
     }
 
     function sendMessage() {
-        fetch(`http://localhost:${apiPort}/api/send_message?hash=${selectedContact}&subject=${subject}&message=${message}`, {
+        fetch(`http://${backendUrl}:${apiPort}/api/send_message?hash=${selectedContact}&subject=${subject}&message=${message}`, {
             method: 'POST'
         })
             .then(response => {

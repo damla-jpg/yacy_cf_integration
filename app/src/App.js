@@ -14,6 +14,8 @@ import Settings from './pages/Settings';
 import Messages from './pages/Messages';
 import axios from 'axios';
 import Explore from './pages/Explore';
+const apiPort = process.env.REACT_APP_API_PORT;
+const backendUrl = process.env.REACT_APP_BACKEND_ADDRESS;
 
 const NavbarPagination = styled(Pagination)({
   '& .MuiPaginationItem-root': {
@@ -29,7 +31,6 @@ const NavbarPagination = styled(Pagination)({
 
 
 function App() {
-  const apiPort = process.env.REACT_APP_API_PORT;
   console.log('apiPort:', apiPort);
   let [query, setQuery] = useState('');
   let [queryResults, setQueryResults] = useState([]);
@@ -72,7 +73,7 @@ function App() {
       link: link
     };
 
-    axios.post(`http://localhost:${apiPort}/api/get_click`, body)
+    axios.post(`http://${backendUrl}:${apiPort}/api/get_click`, body)
       .then((response) => {
         console.log(response);
       })
@@ -104,7 +105,7 @@ function App() {
     let results = [];
     let response1, data1;
     try {
-      response1 = await axios.get(`http://localhost:${apiPort}/search?query=${query}`);
+      response1 = await axios.get(`http://${backendUrl}:${apiPort}/search?query=${query}`);
       data1 = response1.data;
     }
     catch (error) {
@@ -120,7 +121,7 @@ function App() {
       const startRecord = index * 10 + 1;
 
       try {
-        const result = await axios.get(`http://localhost:${apiPort}/search?query=${query}&startRecord=${startRecord}`);
+        const result = await axios.get(`http://${backendUrl}:${apiPort}/search?query=${query}&startRecord=${startRecord}`);
         const data = await result.data;
         results = results.concat(data.channels[0].items);
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardActionArea, CardContent, listItemButtonClasses, Typography } from '@mui/material';
 const apiPort = process.env.REACT_APP_API_PORT;
+const backendUrl = process.env.REACT_APP_BACKEND_ADDRESS;
 
 const Explore = () => {
     const [queryPredictions, setQueryPredictions] = React.useState([]);
@@ -36,7 +37,7 @@ const Explore = () => {
     React.useEffect(() => {
         function getPredictions() {
             // get predictions from the server
-            fetch(`http://localhost:${apiPort}/api/fetch_predictions`)
+            fetch(`http://${backendUrl}:${apiPort}/api/fetch_predictions`)
                 .then(response => response.json())
                 .then(data => {
                     console.log(data);

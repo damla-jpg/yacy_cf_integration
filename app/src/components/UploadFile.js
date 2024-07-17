@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import styled from 'styled-components';
 const apiPort = process.env.REACT_APP_API_PORT;
+const backendUrl = process.env.REACT_APP_BACKEND_ADDRESS;
 
 const Textarea = styled(TextField)(
     ({ theme }) => ({
@@ -58,7 +59,7 @@ export default function UploadButton() {
         }
 
         try {
-            const response = await axios.post(`http://localhost:${apiPort}/upload`, formData, {
+            const response = await axios.post(`http://${backendUrl}:${apiPort}/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }

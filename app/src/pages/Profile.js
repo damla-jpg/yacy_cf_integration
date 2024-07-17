@@ -2,6 +2,7 @@ import axios from 'axios';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 const apiPort = process.env.REACT_APP_API_PORT;
+const backendUrl = process.env.REACT_APP_BACKEND_ADDRESS;
 
 function Profile() {
     let [peerInfo, setPeerInfo] = useState('');
@@ -32,7 +33,7 @@ function Profile() {
     }
 
     function getPeerInfo() {
-        axios.get(`http://localhost:${apiPort}/profile`)
+        axios.get(`http://${backendUrl}:${apiPort}/profile`)
             .then(response => {
                 setPeerInfo(response.data);
                 // console.log(response.data);
