@@ -5,6 +5,7 @@ import Contacts from '../components/DropdownContacts';
 import axios from 'axios';
 import AlertDialogSlide from '../components/PopUpAlert';
 import { Button } from '@mui/material';
+import { Subject } from '../components/MessageBox';
 const apiPort = process.env.REACT_APP_API_PORT;
 const backendUrl = process.env.REACT_APP_BACKEND_ADDRESS;
 
@@ -14,16 +15,58 @@ function Settings() {
     const [selectedContact, setSelectedContact] = useState('');
     const [peers, setPeers] = useState([]);
     const [whitelist, setWhitelist] = useState([]);
+    const [hash, setHash] = useState(''); // [hash, setHash]
+    const [ip, setIP] = useState(''); // [ip, setIP]
+    const [port, setPort] = useState(''); // [port, setPort]
 
     function handleContactChange(e) {
         // console.log("selected contact", e.target.value);
         setSelectedContact(e.target.value);
     }
 
+    function handleHashChange(e) {
+        setHash(e.target.value);
+    }
+
+    function handleIPChange(e) {
+        setIP(e.target.value);
+    }
+
+    function handlePortChange(e) {
+        setPort(e.target.value);
+    }
+
     function disagreeAction() {
         console.log('Disagree');
         // clear selected contact
         setSelectedContact('');
+    }
+
+    function manualContact() {
+        const agreeAction = async () => {
+            console.log("Agree", hash, ip, port);
+            await axios.post(`http://${backendUrl}:${apiPort}/api/create_whitelist?ip=${ip}&port=${port}&hash=${hash}`)
+                .then(response => {
+                    setLoading(false);
+                    console.log(response);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        };
+
+        return (
+            <AlertDialogSlide title={"Are you sure you want to add this peer to your whitelist?"}
+                content={
+                    "Hash: " + hash + " - " +
+                    "IP: " + ip + " - " +
+                    "Port: " + port
+                }
+                buttonLabel={"ADD PEER"}
+                agreeAction={agreeAction}
+                disagreeAction={disagreeAction} />
+        )
+
     }
 
     const getIPFSHash = () => {
@@ -186,6 +229,12 @@ function Settings() {
 
                 <Contacts options={contacts} selectedValue={selectedContact} onChange={handleContactChange} name="Select Contact" />
                 {selectedContact && getIPFSHash()}
+
+                <h2>Manually add peer to whitelist:</h2>
+                <Subject type="text" placeholder="Hash" value={hash} onChange={handleHashChange} />
+                <Subject type="text" placeholder="IP" value={ip} onChange={handleIPChange} />
+                <Subject type="text" placeholder="Port" value={port} onChange={handlePortChange} />
+                {hash && ip && port && manualContact()}
             </div>
             <div style={{ width: "50%", float: "right" }}>
                 {displayWhitelist()}
